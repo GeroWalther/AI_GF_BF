@@ -1,5 +1,6 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
+
 import { supabase } from '~/src/lib/supabase';
 
 export default function AppleSignIn() {
@@ -23,8 +24,8 @@ export default function AppleSignIn() {
 
         if (error) throw error;
       }
-    } catch (error) {
-      if (error.code === 'ERR_REQUEST_CANCELED') {
+    } catch (error: unknown) {
+      if ((error as { code?: string }).code === 'ERR_REQUEST_CANCELED') {
         // Handle user canceling the sign-in flow
         console.log('User canceled Apple Sign in');
       } else {
