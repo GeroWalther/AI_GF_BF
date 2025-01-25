@@ -10,7 +10,7 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
   const client = useCreateChatClient({
     apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY!,
     tokenOrProvider:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzNCJ9.uXrTIldOXzowLRVRmfqP3liSvigYtnmIL93xGeq7v4M',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzNCJ9.JvAwz1IFHYlx8rxfdsryokJrlSdJ0DaUAUNft7suUes',
     userData: {
       id: '1234',
       name: 'Gero',
