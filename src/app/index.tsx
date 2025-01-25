@@ -1,11 +1,18 @@
-import { Stack } from 'expo-router';
+import { Redirect, Stack } from 'expo-router';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
 import AppleSignIn from '../components/AppleSignIn';
+import { useAuth } from './ctx/AuthProvider';
 
 import { mainBrandColor } from '~/src/consts/colors';
 
 export default function AppEntrypoint() {
+  const { isAuthenticated } = useAuth();
+
+  if (isAuthenticated) {
+    return <Redirect href="/(protected)" />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
