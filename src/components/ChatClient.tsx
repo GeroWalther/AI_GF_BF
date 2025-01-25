@@ -7,14 +7,13 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
   const [status, setStatus] = useState<string>('Starting...');
   const [clientReady, setClientReady] = useState(false);
 
+  const user = { id: '1234', name: 'Gero' };
+
   const client = useCreateChatClient({
     apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY!,
     tokenOrProvider:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzNCJ9.JvAwz1IFHYlx8rxfdsryokJrlSdJ0DaUAUNft7suUes',
-    userData: {
-      id: '1234',
-      name: 'Gero',
-    },
+    userData: user,
   });
 
   useEffect(() => {
@@ -25,7 +24,7 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
         setStatus('Setting up channel...');
         const channel = client.channel('messaging', 'the_park', {
           name: 'The Park',
-          members: ['1234'],
+          members: [user.id],
         });
 
         await channel.create();

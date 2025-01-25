@@ -7,7 +7,7 @@ export default function Layout() {
   return (
     <GestureHandlerRootView className="flex-1">
       <OverlayProvider>
-        <Stack />
+        <Stack screenOptions={{ headerShown: false }} />
       </OverlayProvider>
     </GestureHandlerRootView>
   );

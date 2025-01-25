@@ -1,13 +1,25 @@
-import { Channel, MessageInput, MessageList, useChatContext } from 'stream-chat-expo';
+import { Redirect, Stack } from 'expo-router';
+import { SafeAreaView } from 'react-native';
+import { Channel, MessageInput, MessageList } from 'stream-chat-expo';
+
+import { mainBrandColor } from '~/src/consts/colors';
+import useStore from '~/src/store';
 
 export default function ChannelScreen() {
-  const { client } = useChatContext();
-  const channel = client.channel('messaging', 'the_park');
+  const channel = useStore((state) => state.channel);
+
+  if (!channel) {
+    return <Redirect href="/" />;
+  }
 
   return (
-    <Channel channel={channel}>
-      <MessageList />
-      <MessageInput />
-    </Channel>
+    <SafeAreaView style={{ backgroundColor: mainBrandColor }}>
+      <Stack.Screen options={{ headerTitle: channel.data?.name || 'Chat' }} />
+
+      <Channel channel={channel}>
+        <MessageList />
+        <MessageInput />
+      </Channel>
+    </SafeAreaView>
   );
 }
