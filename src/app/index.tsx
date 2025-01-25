@@ -1,24 +1,58 @@
 import { Stack } from 'expo-router';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 
 import AppleSignIn from '../components/AppleSignIn';
 
+import { mainBrandColor } from '~/src/consts/colors';
+
 export default function AppEntrypoint() {
   return (
-    <SafeAreaView className="bg-red flex-1">
+    <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      <View className="flex-1 items-center justify-center px-4">
-        <View className="mb-12 w-full">
-          <Text className="text-center text-4xl font-bold text-red-700">Welcome</Text>
-          <Text className="mt-2 text-center text-xl text-gray-600">
-            Sign in to meet your AI companion
-          </Text>
+      <View style={styles.content}>
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>Welcome</Text>
+          <Text style={styles.subtitle}>Sign in to meet your AI companion</Text>
         </View>
 
-        <View className="w-full items-center justify-center">
+        <View style={styles.buttonContainer}>
           <AppleSignIn />
         </View>
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  textContainer: {
+    marginBottom: 48,
+    width: '100%',
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: mainBrandColor,
+  },
+  subtitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#4B5563',
+    marginTop: 8,
+  },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
