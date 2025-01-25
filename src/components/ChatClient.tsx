@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, View, Text } from 'react-native';
+import { ActivityIndicator, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { useCreateChatClient, Chat, MessageType } from 'stream-chat-expo';
 
 export default function ChatClient({ children }: { children: React.ReactNode }) {
@@ -46,11 +46,11 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
 
   if (!client || !clientReady) {
     return (
-      <View className="flex-1 items-center justify-center bg-amber-50">
+      <SafeAreaView style={styles.container}>
         <ActivityIndicator color="black" size="large" />
-        <Text className="mt-4 text-lg">{status}</Text>
-        {error && <Text className="mt-2 text-center text-red-500">Error: {error}</Text>}
-      </View>
+        <Text style={styles.statusText}>{status}</Text>
+        {error && <Text style={styles.errorText}>Error: {error}</Text>}
+      </SafeAreaView>
     );
   }
 
@@ -60,3 +60,21 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
     </Chat>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
+  statusText: {
+    marginTop: 20,
+    fontSize: 16,
+    color: '#666',
+  },
+  errorText: {
+    marginTop: 10,
+    color: 'red',
+    fontSize: 14,
+  },
+});
