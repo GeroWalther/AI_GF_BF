@@ -3,7 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { OverlayProvider } from 'stream-chat-expo';
 
 import '../global.css';
-import { AuthProvider } from './ctx/AuthProvider';
+import { AuthProvider } from '../ctx/AuthProvider';
 
 export default function Layout() {
   return (

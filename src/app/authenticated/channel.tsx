@@ -9,7 +9,7 @@ export default function ChannelScreen() {
   const channel = useStore((state) => state.channel);
 
   if (!channel) {
-    return <Redirect href="/" />;
+    return <Redirect href="/authenticated" />;
   }
 
   return (

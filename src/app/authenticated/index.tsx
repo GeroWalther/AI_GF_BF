@@ -18,7 +18,7 @@ export default function Home() {
       filters={filter}
       onSelect={(channel) => {
         setChannel(channel);
-        router.push(`/channel`);
+        router.push('/authenticated/channel');
       }}
     />
   );

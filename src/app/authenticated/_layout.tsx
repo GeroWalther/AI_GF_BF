@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Link, Redirect, Stack } from 'expo-router';
 
-import { useAuth } from '../ctx/AuthProvider';
+import { useAuth } from '../../ctx/AuthProvider';
 
 import ChatClient from '~/src/components/ChatClient';
 import { mainBrandColor } from '~/src/consts/colors';
@@ -21,7 +21,7 @@ export default function ProtectedLayout() {
           options={{
             headerTitle: 'Chats',
             headerRight: () => (
-              <Link href="/profile" asChild>
+              <Link href="/authenticated/profile" asChild>
                 <Ionicons
                   name="person-circle-outline"
                   size={24}
