@@ -1,5 +1,6 @@
 import { Redirect, Stack } from 'expo-router';
-import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, Button } from 'react-native';
+import { supabase } from '../lib/supabase';
 
 import AppleSignIn from '../components/AppleSignIn';
 import { useAuth } from '../ctx/AuthProvider';
@@ -9,6 +10,18 @@ import { mainBrandColor } from '~/src/consts/colors';
 export default function AppEntrypoint() {
   const { isAuthenticated } = useAuth();
 
+  const testFunction = async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const { data, error } = await supabase.functions.invoke('stream-token-provider', {
+      headers: {
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+    });
+    console.log('Function response:', { data, error });
+  };
+
   if (isAuthenticated) {
     return <Redirect href="/authenticated" />;
   }
@@ -17,6 +30,7 @@ export default function AppEntrypoint() {
     <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.content}>
+        <Button title="Test Function" onPress={testFunction} />
         <View style={styles.textContainer}>
           <Text style={styles.title}>Welcome</Text>
           <Text style={styles.subtitle}>Sign in to meet your AI companion</Text>

@@ -1,48 +1,107 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { ActivityIndicator, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { useCreateChatClient, Chat, MessageType } from 'stream-chat-expo';
+import { supabase } from '../lib/supabase';
+import { useUser } from '../ctx/AuthProvider';
 
 export default function ChatClient({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('Starting...');
   const [clientReady, setClientReady] = useState(false);
+  const user = useUser();
 
-  const user = { id: '1234', name: 'Gero' };
+  const tokenProvider = useCallback(async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error('No session token');
+
+      console.log('Fetching token for user:', user.id);
+      const response = await fetch(
+        'https://ftbiaqoikfkvyngporex.supabase.co/functions/v1/stream-token-provider',
+        {
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        }
+      );
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error('Token fetch failed:', responseData);
+        throw new Error(`Failed to get token: ${responseData.error}`);
+      }
+
+      return responseData.token;
+    } catch (error: unknown) {
+      console.error('Token provider full error:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        name: error instanceof Error ? error.name : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'Unknown stack',
+        user: user.id,
+      });
+      throw error;
+    }
+  }, [user.id]);
 
   const client = useCreateChatClient({
     apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY!,
-    tokenOrProvider:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMTIzNCJ9.JvAwz1IFHYlx8rxfdsryokJrlSdJ0DaUAUNft7suUes',
-    userData: user,
+    tokenOrProvider: tokenProvider,
+    userData: {
+      id: user.id,
+      name: user.email,
+      role: 'admin',
+      image: user.user_metadata?.avatar_url,
+    },
   });
 
   useEffect(() => {
-    if (!client) return;
+    let mounted = true;
 
     const setupChannel = async () => {
+      if (!client) return;
+
       try {
         setStatus('Setting up channel...');
+
         const channel = client.channel('messaging', 'the_park', {
           name: 'The Park',
           members: [user.id],
+          created_by_id: user.id,
         });
 
-        await channel.create();
         await channel.watch();
-        setStatus('Ready');
-        setClientReady(true);
+
+        if (mounted) {
+          setStatus('Ready');
+          setClientReady(true);
+        }
       } catch (error: any) {
-        setError(error?.message || 'Unknown error');
-        setStatus('Channel setup failed');
+        console.error('Channel setup error:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          response: error.response?.data,
+          token: await tokenProvider(), // Log the token for debugging
+        });
+        if (mounted) {
+          setError(error?.message || 'Unknown error');
+          setStatus('Channel setup failed');
+        }
       }
     };
 
     setupChannel();
 
     return () => {
-      client.disconnectUser();
+      mounted = false;
+      if (client?.wsConnection?.isHealthy) {
+        client.disconnectUser();
+      }
     };
-  }, [client]);
+  }, [client, user.id, tokenProvider]);
 
   if (!client || !clientReady) {
     return (
