@@ -11,25 +11,13 @@ async function createStreamToken(userId: string, secret: string) {
       user_id: userId,
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
       iat: Math.floor(Date.now() / 1000),
-      // Stream specific claims
-      role: 'admin',
-      // Add these specific permissions
-      messaging: {
-        '*': ['read', 'write', 'create', 'delete', 'update'],
-        'the_park': ['read', 'write', 'create', 'delete', 'update']
-      },
-      user_capabilities: {
-        'read': true,
-        'write': true,
-        'create': true,
-        'update': true,
-        'delete': true,
-        'send-message': true,
-        'send-reaction': true,
-        'send-reply': true,
-        'send-event': true,
-        'upload-file': true,
-        'upload-image': true
+      // Basic Stream Chat permissions
+      role: 'user',
+      type: 'messaging',
+      permission: 'read',
+      access: 'channel',
+      grants: {
+        messaging: ['read', 'write', 'create', 'delete', 'update']
       }
     };
 
@@ -109,8 +97,8 @@ serve(async (req: Request) => {
     console.log('User found:', { id: user.id, email: user.email });
     console.log('Creating token with payload:', {
       user_id: user.id,
-      role: 'admin',
-      permissions: ['read', 'write', 'create_channel', 'read_channel']
+      role: 'user',
+      permissions: ['ReadChannel', 'ReadChannelMembers', 'ReadMessageFlags', 'ReadOwnChannel']
     });
 
     const token = await createStreamToken(user.id, apiSecret);

@@ -52,8 +52,6 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
     userData: {
       id: user.id,
       name: user.email,
-      role: 'admin',
-      image: user.user_metadata?.avatar_url,
     },
   });
 
@@ -66,10 +64,14 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
       try {
         setStatus('Setting up channel...');
 
+        // First connect user explicitly
+        const token = await tokenProvider();
+        await client.connectUser({ id: user.id, name: user.email }, token);
+
+        // Then create channel
         const channel = client.channel('messaging', 'the_park', {
           name: 'The Park',
           members: [user.id],
-          created_by_id: user.id,
         });
 
         await channel.watch();
@@ -84,7 +86,6 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
           code: error.code,
           details: error.details,
           response: error.response?.data,
-          token: await tokenProvider(), // Log the token for debugging
         });
         if (mounted) {
           setError(error?.message || 'Unknown error');
