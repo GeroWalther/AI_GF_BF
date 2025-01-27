@@ -1,8 +1,9 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, SafeAreaView, StyleSheet } from 'react-native';
 import { useCreateChatClient, Chat, MessageType } from 'stream-chat-expo';
-import { supabase } from '../lib/supabase';
+
 import { useUser } from '../ctx/AuthProvider';
+import { streamTokenProvider } from '../utils/stream';
 
 export default function ChatClient({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
@@ -10,45 +11,9 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
   const [clientReady, setClientReady] = useState(false);
   const user = useUser();
 
-  const tokenProvider = useCallback(async () => {
-    try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error('No session token');
-
-      console.log('Fetching token for user:', user.id);
-      const response = await fetch(
-        'https://ftbiaqoikfkvyngporex.supabase.co/functions/v1/stream-token-provider',
-        {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        }
-      );
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        console.error('Token fetch failed:', responseData);
-        throw new Error(`Failed to get token: ${responseData.error}`);
-      }
-
-      return responseData.token;
-    } catch (error: unknown) {
-      console.error('Token provider full error:', {
-        message: error instanceof Error ? error.message : 'Unknown error',
-        name: error instanceof Error ? error.name : 'Unknown error',
-        stack: error instanceof Error ? error.stack : 'Unknown stack',
-        user: user.id,
-      });
-      throw error;
-    }
-  }, [user.id]);
-
   const client = useCreateChatClient({
     apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY!,
-    tokenOrProvider: tokenProvider,
+    tokenOrProvider: streamTokenProvider,
     userData: {
       id: user.id,
       name: user.email,
@@ -65,7 +30,7 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
         setStatus('Setting up channel...');
 
         // First connect user explicitly
-        const token = await tokenProvider();
+        const token = await streamTokenProvider();
         await client.connectUser({ id: user.id, name: user.email }, token);
 
         // Then create channel
@@ -102,7 +67,7 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
         client.disconnectUser();
       }
     };
-  }, [client, user.id, tokenProvider]);
+  }, [client, user.id, streamTokenProvider]);
 
   if (!client || !clientReady) {
     return (
