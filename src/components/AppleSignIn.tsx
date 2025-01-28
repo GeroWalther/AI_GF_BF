@@ -17,7 +17,7 @@ export default function AppleSignIn() {
 
       // Got credentials, now sign in with Supabase
       if (credential.identityToken) {
-        console.log(credential);
+        // console.log(credential);
         const { error } = await supabase.auth.signInWithIdToken({
           provider: 'apple',
           token: credential.identityToken,

@@ -18,7 +18,7 @@ export default function Home() {
       const result = await supabase.functions.invoke('stream-token-provider', {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
-      console.log('Function invoke result:', result);
+      // console.log('Function invoke result:', result);
     }
     testInvoke();
   }, []);

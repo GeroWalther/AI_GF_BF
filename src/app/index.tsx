@@ -19,7 +19,7 @@ export default function AppEntrypoint() {
         Authorization: `Bearer ${session?.access_token}`,
       },
     });
-    console.log('Function response:', { data, error });
+    // console.log('Function response:', { data, error });
   };
 
   if (isAuthenticated) {
