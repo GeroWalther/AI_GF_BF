@@ -20,6 +20,11 @@ export default function ProtectedLayout() {
           name="index"
           options={{
             headerTitle: 'Chats',
+            headerLeft: () => (
+              <Link href="/authenticated/match" asChild>
+                <Ionicons name="add" size={24} color={mainBrandColor} title="Profile" />
+              </Link>
+            ),
             headerRight: () => (
               <Link href="/authenticated/profile" asChild>
                 <Ionicons
