@@ -34,8 +34,8 @@ export default function ChatClient({ children }: { children: React.ReactNode }) 
         await client.connectUser({ id: user.id, name: user.email }, token);
 
         // Then create channel
-        const channel = client.channel('messaging', 'the_park', {
-          name: 'The Park',
+        const channel = client.channel('messaging', 'the_sea', {
+          name: 'The Sea',
           members: [user.id],
         });
 

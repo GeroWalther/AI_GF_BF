@@ -12,9 +12,9 @@ async function createStreamToken(userId: string, secret: string) {
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
       iat: Math.floor(Date.now() / 1000),
       // Basic Stream Chat permissions
-      role: 'user',
+      role: 'admin',
       type: 'messaging',
-      permission: 'read',
+      permission: 'read, write, create, delete, update',
       access: 'channel',
       grants: {
         messaging: ['read', 'write', 'create', 'delete', 'update']
