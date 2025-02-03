@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native';
 import { AITypingIndicatorView, Channel, MessageInput, MessageList } from 'stream-chat-expo';
 import ControlAIButton from '~/src/components/ControlAIButton';
 
-import { mainBrandColor } from '~/src/consts/colors';
+import { mainBrandColor } from '~/src/config/config';
 import useStore from '~/src/store';
 
 export default function ChannelScreen() {

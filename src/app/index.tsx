@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 import AppleSignIn from '../components/AppleSignIn';
 import { useAuth } from '../ctx/AuthProvider';
 
-import { mainBrandColor } from '~/src/consts/colors';
+import { mainBrandColor } from '~/src/config/config';
 
 export default function AppEntrypoint() {
   const { isAuthenticated } = useAuth();

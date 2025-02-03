@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-na
 import React from 'react';
 import { useAuth } from '../../ctx/AuthProvider';
 import { supabase } from '~/src/lib/supabase';
-import { mainBrandColor } from '~/src/consts/colors';
+import { mainBrandColor } from '~/src/config/config';
 
 const Profile = () => {
   const { session } = useAuth();

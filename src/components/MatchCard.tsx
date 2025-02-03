@@ -11,17 +11,17 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import { mainBrandColor } from '../consts/colors';
+import { mainBrandColor, AVATARSBUCKETURL } from '../config/config';
 
 const screenWidth = Dimensions.get('screen').width;
 export const tinderCardWidth = screenWidth * 0.95;
 
 type TinderCard = {
   agent: {
-    image: string;
     name: string;
     bio: string;
     traits: string[];
+    avatar: string;
   };
   numOfCards: number;
   index: number;
@@ -85,12 +85,14 @@ const MatchCard = ({ agent, numOfCards, index, activeIndex, onResponse }: Tinder
         ]}>
         <Image
           style={[StyleSheet.absoluteFillObject, styles.image]}
-          source={{ uri: agent.image }}
+          source={{
+            uri: `${AVATARSBUCKETURL}${agent.avatar}`,
+          }}
         />
 
         <LinearGradient
           // Background Linear Gradient
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
+          colors={['transparent', 'rgba(0,0,0,0.9)']}
           style={[StyleSheet.absoluteFillObject, styles.overlay]}
         />
 

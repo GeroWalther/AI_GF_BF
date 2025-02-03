@@ -4,7 +4,7 @@ import { Link, Redirect, Stack } from 'expo-router';
 import { useAuth } from '../../ctx/AuthProvider';
 
 import ChatClient from '~/src/components/ChatClient';
-import { mainBrandColor } from '~/src/consts/colors';
+import { mainBrandColor } from '~/src/config/config';
 
 export default function ProtectedLayout() {
   const { isAuthenticated } = useAuth();
