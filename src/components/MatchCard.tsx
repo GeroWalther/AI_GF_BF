@@ -26,10 +26,10 @@ type TinderCard = {
   numOfCards: number;
   index: number;
   activeIndex: SharedValue<number>;
-  onResponse: (a: boolean) => void;
+  onMatch: (a: boolean) => void;
 };
 
-const MatchCard = ({ agent, numOfCards, index, activeIndex, onResponse }: TinderCard) => {
+const MatchCard = ({ agent, numOfCards, index, activeIndex, onMatch }: TinderCard) => {
   const translationX = useSharedValue(0);
 
   const animatedCard = useAnimatedStyle(() => ({
@@ -67,48 +67,89 @@ const MatchCard = ({ agent, numOfCards, index, activeIndex, onResponse }: Tinder
         });
         activeIndex.value = withSpring(index + 1);
 
-        runOnJS(onResponse)(event.velocityX > 0);
+        runOnJS(onMatch)(event.velocityX > 0);
       } else {
         translationX.value = withSpring(0);
       }
     });
 
   return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View
-        style={[
-          styles.card,
-          animatedCard,
-          {
-            zIndex: numOfCards - index,
-          },
-        ]}>
-        <Image
-          style={[StyleSheet.absoluteFillObject, styles.image]}
-          source={{
-            uri: `${AVATARSBUCKETURL}${agent.avatar}`,
-          }}
-        />
+    <>
+      <GestureDetector gesture={gesture}>
+        <Animated.View
+          style={[
+            styles.card,
+            animatedCard,
+            {
+              zIndex: numOfCards - index,
+            },
+          ]}>
+          <Image
+            style={[StyleSheet.absoluteFillObject, styles.image]}
+            source={{
+              uri: `${AVATARSBUCKETURL}${agent.avatar}`,
+            }}
+          />
 
-        <LinearGradient
-          // Background Linear Gradient
-          colors={['transparent', 'rgba(0,0,0,0.9)']}
-          style={[StyleSheet.absoluteFillObject, styles.overlay]}
-        />
+          <LinearGradient
+            // Background Linear Gradient
+            colors={['transparent', 'rgba(0,0,0,0.9)']}
+            style={[StyleSheet.absoluteFillObject, styles.overlay]}
+          />
 
-        <View style={styles.footer}>
-          <Text style={styles.name}>{agent.name}</Text>
-          <Text style={styles.bio}>{agent.bio}</Text>
-          <View style={styles.traitsContainer}>
-            {agent.traits?.map((trait, index) => (
-              <View key={index} style={styles.traitBubble}>
-                <Text style={styles.traitText}>{trait.trim()}</Text>
-              </View>
-            ))}
+          <View style={styles.footer}>
+            <Text style={styles.name}>{agent.name}</Text>
+            <Text style={styles.bio}>{agent.bio}</Text>
+            <View style={styles.traitsContainer}>
+              {agent.traits?.map((trait, index) => (
+                <View key={index} style={styles.traitBubble}>
+                  <Text style={styles.traitText}>{trait.trim()}</Text>
+                </View>
+              ))}
+            </View>
           </View>
-        </View>
-      </Animated.View>
-    </GestureDetector>
+        </Animated.View>
+      </GestureDetector>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 100,
+          flexDirection: 'row',
+          width: '100%',
+          justifyContent: 'space-between',
+          paddingHorizontal: 20,
+        }}>
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              left: 20,
+              flexDirection: 'row',
+              alignItems: 'center',
+            },
+          ]}>
+          <Text style={{ color: 'rgba(255,0,0,0.6)', fontSize: 24, marginRight: 8 }}>←</Text>
+          <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, fontFamily: 'Inter' }}>
+            Swipe left to pass
+          </Text>
+        </Animated.View>
+
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              right: 20,
+              flexDirection: 'row',
+              alignItems: 'center',
+            },
+          ]}>
+          <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, fontFamily: 'Inter' }}>
+            Swipe right to match
+          </Text>
+          <Text style={{ color: 'rgba(0,255,0,0.6)', fontSize: 24, marginLeft: 8 }}>→</Text>
+        </Animated.View>
+      </View>
+    </>
   );
 };
 

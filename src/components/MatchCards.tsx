@@ -1,16 +1,20 @@
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Animated, { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
+import { Text, View } from 'react-native';
+import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
 
 import MatchCard from './MatchCard';
 import { supabase } from '../lib/supabase';
 import { mainBrandColor } from '../config/config';
+import { useUser } from '../ctx/AuthProvider';
+import { client } from './ChatClient';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
   const activeIndex = useSharedValue(0);
   const [index, setIndex] = useState(0);
+
+  const user = useUser();
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -39,9 +43,24 @@ const MatchCardsComponent = () => {
     }
   }, [index]);
 
-  const onMatch = (res: boolean, agent: any) => {
-    console.log('on Response: ', res);
-    console.log('agent: ', agent);
+  const onMatch = async (res: boolean, agent: any) => {
+    if (!res) return;
+    const { data } = await supabase
+      .from('matches')
+      .insert({
+        user_id: user.id,
+        agent_id: agent.id,
+      })
+      .select()
+      .single();
+
+    console.log('match data: ', data);
+
+    await client
+      .channel('messaging', data.id, {
+        //  members: [user.id, agent.id],
+      })
+      .watch();
   };
 
   return (
@@ -64,7 +83,7 @@ const MatchCardsComponent = () => {
           numOfCards={agents.length}
           index={index}
           activeIndex={activeIndex}
-          onResponse={(res) => onMatch(res, agent)}
+          onMatch={(res) => onMatch(res, agent)}
         />
       ))}
       {index > (agents?.length ?? 0) - 3 && (
@@ -72,45 +91,6 @@ const MatchCardsComponent = () => {
           No Models left. You have seen them all.
         </Text>
       )}
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 100,
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: 20,
-        }}>
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              left: 20,
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          ]}>
-          <Text style={{ color: 'rgba(255,0,0,0.6)', fontSize: 24, marginRight: 8 }}>←</Text>
-          <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, fontFamily: 'Inter' }}>
-            Swipe left to pass
-          </Text>
-        </Animated.View>
-
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              right: 20,
-              flexDirection: 'row',
-              alignItems: 'center',
-            },
-          ]}>
-          <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, fontFamily: 'Inter' }}>
-            Swipe right to match
-          </Text>
-          <Text style={{ color: 'rgba(0,255,0,0.6)', fontSize: 24, marginLeft: 8 }}>→</Text>
-        </Animated.View>
-      </View>
     </View>
   );
 };
