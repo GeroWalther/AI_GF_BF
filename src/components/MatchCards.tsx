@@ -4,10 +4,9 @@ import { Text, View } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
 
 import MatchCard from './MatchCard';
-import { supabase } from '../lib/supabase';
 import { mainBrandColor } from '../config/config';
 import { useUser } from '../ctx/AuthProvider';
-import { client } from './ChatClient';
+import { supabase } from '../lib/supabase';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
@@ -56,11 +55,12 @@ const MatchCardsComponent = () => {
 
     console.log('match data: ', data);
 
-    await client
-      .channel('messaging', data.id, {
-        //  members: [user.id, agent.id],
-      })
-      .watch();
+    // TODO: Initialize Stream chat client before using
+    // await client
+    //   .channel('messaging', data.id, {
+    //     members: [user.id, agent.id],
+    //   })
+    //   .watch();
   };
 
   return (
