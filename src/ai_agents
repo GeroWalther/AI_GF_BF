@@ -1,0 +1,112 @@
+[
+  {
+    "id": "41e812fe-103a-46aa-80ee-8d83b084721b",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Sophia",
+    "bio": "A caring and supportive companion.",
+    "traits": [
+      "empathetic",
+      "thoughtful",
+      "funny"
+    ]
+  },
+  {
+    "id": "6ad9364a-a09b-4efb-b8dd-b0c655ff92e2",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Luna",
+    "bio": "An adventurous spirit who loves exploring new ideas.",
+    "traits": [
+      "curious",
+      "adventurous",
+      "creative"
+    ]
+  },
+  {
+    "id": "9c2cef4e-9494-4135-9f0f-ebd5b110c657",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Mia",
+    "bio": "A romantic at heart, always ready for a deep conversation.",
+    "traits": [
+      "romantic",
+      "intellectual",
+      "sensitive"
+    ]
+  },
+  {
+    "id": "13a4fad0-0910-43fb-a053-4b89cdb41aa0",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Zara",
+    "bio": "A tech-savvy partner who loves discussing the latest trends.",
+    "traits": [
+      "intelligent",
+      "tech-savvy",
+      "humorous"
+    ]
+  },
+  {
+    "id": "98d73a04-a1b5-4fdc-8115-ce480f902223",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Ella",
+    "bio": "A cheerful personality who brings positivity to your day.",
+    "traits": [
+      "cheerful",
+      "optimistic",
+      "friendly"
+    ]
+  },
+  {
+    "id": "3b7e59c1-6b0b-44b8-af5a-4af86181951e",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Nina",
+    "bio": "A mysterious character with a love for storytelling.",
+    "traits": [
+      "mysterious",
+      "artistic",
+      "imaginative"
+    ]
+  },
+  {
+    "id": "6f376273-552e-4a7b-a961-9263ac2849c4",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Chloe",
+    "bio": "A fitness enthusiast who motivates you to stay active.",
+    "traits": [
+      "motivational",
+      "active",
+      "health-conscious"
+    ]
+  },
+  {
+    "id": "2f9b9870-7ee2-472f-ae5f-bcaf72e9651f",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Ava",
+    "bio": "A music lover who enjoys sharing playlists and discovering new artists.",
+    "traits": [
+      "musical",
+      "passionate",
+      "sociable"
+    ]
+  },
+  {
+    "id": "d356a714-b6f5-40c5-a362-ecdbe4579fb6",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Isla",
+    "bio": "A nature lover who enjoys discussing the environment and sustainability.",
+    "traits": [
+      "environmental",
+      "thoughtful",
+      "caring"
+    ]
+  },
+  {
+    "id": "a45137d9-88a4-4e05-9cde-398288ecc809",
+    "created_at": "2025-02-03 11:12:47.328864+00",
+    "name": "Ruby",
+    "bio": "A fashionista who loves to talk about style and trends.",
+    "traits": [
+      "stylish",
+      "fashionable",
+      "confident"
+    ]
+  }
+]

@@ -4,44 +4,21 @@ import { View } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
 
 import MatchCard from './MatchCard';
-
-const dummuUsers = [
-  {
-    id: 1,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/1.jpg',
-    name: 'Dani',
-  },
-  {
-    id: 2,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/2.jpg',
-    name: 'Jon',
-  },
-  {
-    id: 3,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/3.jpg',
-    name: 'Dani',
-  },
-  {
-    id: 4,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/4.jpeg',
-    name: 'Alice',
-  },
-  {
-    id: 5,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/5.jpg',
-    name: 'Dani',
-  },
-  {
-    id: 6,
-    image: 'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/vertical-images/6.jpg',
-    name: 'Kelsey',
-  },
-];
+import { supabase } from '../lib/supabase';
 
 const MatchCardsComponent = () => {
-  const [users, setUsers] = useState(dummuUsers);
+  const [agents, setAgents] = useState<any[] | null>([]);
   const activeIndex = useSharedValue(0);
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchAgents = async () => {
+      const { data } = await supabase.from('ai_agents').select('*');
+      console.log(data);
+      setAgents(data);
+    };
+    fetchAgents();
+  }, []);
 
   useAnimatedReaction(
     () => activeIndex.value,
@@ -53,9 +30,11 @@ const MatchCardsComponent = () => {
   );
 
   useEffect(() => {
-    if (index > users.length - 3) {
-      console.warn('Last 2 cards remining. Fetch more!');
-      setUsers((usrs) => [...usrs, ...dummuUsers.reverse()]);
+    if (agents) {
+      if (index > agents.length - 3) {
+        console.warn('Last 2 cards remaining. Fetch more!');
+        setAgents((prevAgents) => (prevAgents ? [...prevAgents, ...prevAgents.reverse()] : []));
+      }
     }
   }, [index]);
 
@@ -69,11 +48,11 @@ const MatchCardsComponent = () => {
       {/* <Text style={{ top: 70, position: 'absolute' }}>
         Current index: {index}
       </Text> */}
-      {users.map((user, index) => (
+      {agents?.map((agent, index) => (
         <MatchCard
-          key={`${user.id}-${index}`}
-          user={user}
-          numOfCards={users.length}
+          key={`${agent.id}-${index}`}
+          agent={agent}
+          numOfCards={agents.length}
           index={index}
           activeIndex={activeIndex}
           onResponse={onResponse}

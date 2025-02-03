@@ -11,14 +11,17 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { mainBrandColor } from '../consts/colors';
 
 const screenWidth = Dimensions.get('screen').width;
 export const tinderCardWidth = screenWidth * 0.95;
 
 type TinderCard = {
-  user: {
+  agent: {
     image: string;
     name: string;
+    bio: string;
+    traits: string[];
   };
   numOfCards: number;
   index: number;
@@ -26,7 +29,7 @@ type TinderCard = {
   onResponse: (a: boolean) => void;
 };
 
-const MatchCard = ({ user, numOfCards, index, activeIndex, onResponse }: TinderCard) => {
+const MatchCard = ({ agent, numOfCards, index, activeIndex, onResponse }: TinderCard) => {
   const translationX = useSharedValue(0);
 
   const animatedCard = useAnimatedStyle(() => ({
@@ -80,7 +83,10 @@ const MatchCard = ({ user, numOfCards, index, activeIndex, onResponse }: TinderC
             zIndex: numOfCards - index,
           },
         ]}>
-        <Image style={[StyleSheet.absoluteFillObject, styles.image]} source={{ uri: user.image }} />
+        <Image
+          style={[StyleSheet.absoluteFillObject, styles.image]}
+          source={{ uri: agent.image }}
+        />
 
         <LinearGradient
           // Background Linear Gradient
@@ -89,7 +95,15 @@ const MatchCard = ({ user, numOfCards, index, activeIndex, onResponse }: TinderC
         />
 
         <View style={styles.footer}>
-          <Text style={styles.name}>{user.name}</Text>
+          <Text style={styles.name}>{agent.name}</Text>
+          <Text style={styles.bio}>{agent.bio}</Text>
+          <View style={styles.traitsContainer}>
+            {agent.traits?.map((trait, index) => (
+              <View key={index} style={styles.traitBubble}>
+                <Text style={styles.traitText}>{trait.trim()}</Text>
+              </View>
+            ))}
+          </View>
         </View>
       </Animated.View>
     </GestureDetector>
@@ -98,6 +112,7 @@ const MatchCard = ({ user, numOfCards, index, activeIndex, onResponse }: TinderC
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: mainBrandColor,
     width: tinderCardWidth,
     // height: tinderCardWidth * 1.67,
     aspectRatio: 1 / 1.67,
@@ -132,6 +147,29 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     fontFamily: 'InterBold',
+  },
+  bio: {
+    fontSize: 16,
+    color: 'white',
+    fontFamily: 'Inter',
+    marginVertical: 4,
+  },
+  traitsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginTop: 6,
+  },
+  traitBubble: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  traitText: {
+    color: 'white',
+    fontSize: 12,
+    fontFamily: 'Inter',
   },
 });
 
