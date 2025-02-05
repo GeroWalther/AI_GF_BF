@@ -44,23 +44,56 @@ const MatchCardsComponent = () => {
 
   const onMatch = async (res: boolean, agent: any) => {
     if (!res) return;
-    const { data } = await supabase
-      .from('matches')
-      .insert({
-        user_id: user.id,
-        agent_id: agent.id,
-      })
-      .select()
-      .single();
 
-    console.log('match data: ', data);
+    try {
+      // 0. First sync the agent to Stream
+      const { error: syncError } = await supabase.functions.invoke('sync_agents_to_stream', {
+        body: { agent },
+      });
 
-    // TODO: Initialize Stream chat client before using
-    // await client
-    //   .channel('messaging', data.id, {
-    //     members: [user.id, agent.id],
-    //   })
-    //   .watch();
+      if (syncError) {
+        console.error('Error syncing agent:', syncError);
+        throw syncError;
+      }
+
+      // 1. Create match in Supabase
+      const { data: match, error: matchError } = await supabase
+        .from('matches')
+        .insert({
+          user_id: user.id,
+          agent_id: agent.id,
+        })
+        .select()
+        .single();
+
+      if (matchError) throw matchError;
+      if (!match) throw new Error('No match data returned');
+
+      console.log('Match created:', match);
+
+      // 2. Create Stream channel via edge function
+      const { data, error } = await supabase.functions.invoke('create-match-channel', {
+        body: {
+          matchId: match.id,
+          userId: user.id,
+          agentId: agent.id,
+          agentName: agent.name,
+        },
+      });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+
+      console.log('Channel created:', data);
+
+      // 3. Navigate to chat or update UI as needed
+      // router.push('/authenticated/channel'); // Uncomment if you want to navigate to chat
+    } catch (error) {
+      console.error('Error creating match:', error);
+      // You might want to show an error message to the user here
+    }
   };
 
   return (
