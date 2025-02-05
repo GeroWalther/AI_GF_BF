@@ -7,6 +7,8 @@ import MatchCard from './MatchCard';
 import { mainBrandColor } from '../config/config';
 import { useUser } from '../ctx/AuthProvider';
 import { supabase } from '../lib/supabase';
+import { startAIAgent } from '../utils/stream';
+import { useRouter } from 'expo-router';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
@@ -14,6 +16,7 @@ const MatchCardsComponent = () => {
   const [index, setIndex] = useState(0);
 
   const user = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -88,8 +91,12 @@ const MatchCardsComponent = () => {
 
       console.log('Channel created:', data);
 
-      // 3. Navigate to chat or update UI as needed
-      // router.push('/authenticated/channel'); // Uncomment if you want to navigate to chat
+      // 3. Start the AI agent for this channel
+      await startAIAgent(match.id);
+      console.log('AI agent started for channel:', match.id);
+
+      // 4. Navigate to chat
+      router.push(`/authenticated/channel/${match.id}`);
     } catch (error) {
       console.error('Error creating match:', error);
       // You might want to show an error message to the user here

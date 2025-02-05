@@ -34,6 +34,7 @@ Deno.serve(async (req) => {
       last_active: new Date().toISOString(),
       online: true,
       role: "admin",
+      isAi: true,
     }
 
     if (agent.avatar) {

@@ -1,8 +1,10 @@
 import { post } from './api.ts';
-const AI_AGENT_URL = 'http://localhost:3000';
-console.log('AI_AGENT_URL:', AI_AGENT_URL);
+import { AI_SERVER_URL } from '../config/config';
+
+console.log('AI_SERVER_URL:', AI_SERVER_URL);
 
 export const startAI = async (channelId: string) =>
-  post(`${AI_AGENT_URL}/start-ai-agent`, { channel_id: channelId });
+  post(`${AI_SERVER_URL}/start-ai-agent`, { channel_id: channelId });
+
 export const stopAI = async (channelId: string) =>
-  post(`${AI_AGENT_URL}/stop-ai-agent`, { channel_id: channelId });
+  post(`${AI_SERVER_URL}/stop-ai-agent`, { channel_id: channelId });
