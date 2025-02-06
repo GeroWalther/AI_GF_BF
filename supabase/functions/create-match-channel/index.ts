@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     const channel = serverClient.channel('messaging', matchId, {
       members: [userId, agentId],
       created_by_id: userId,
-      name: `Chat with ${agentName}`,
+      name: agentName,
     });
 
     await channel.create();

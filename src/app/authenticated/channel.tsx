@@ -1,7 +1,6 @@
 import { Redirect, Stack, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 import { AITypingIndicatorView, Channel, MessageInput, MessageList } from 'stream-chat-expo';
-import ControlAIButton from '~/src/components/ControlAIButton';
 
 import { mainBrandColor } from '~/src/config/config';
 import { startAI, stopAI } from '~/src/http/request';
@@ -31,7 +30,6 @@ export default function ChannelScreen() {
 
       <Channel channel={channel}>
         <MessageList />
-        {/* <ControlAIButton channel={channel} /> */}
         <AITypingIndicatorView />
         <MessageInput />
       </Channel>
