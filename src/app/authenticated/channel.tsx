@@ -1,13 +1,25 @@
-import { Redirect, Stack } from 'expo-router';
+import { Redirect, Stack, useFocusEffect } from 'expo-router';
 import { SafeAreaView } from 'react-native';
 import { AITypingIndicatorView, Channel, MessageInput, MessageList } from 'stream-chat-expo';
 import ControlAIButton from '~/src/components/ControlAIButton';
 
 import { mainBrandColor } from '~/src/config/config';
+import { startAI, stopAI } from '~/src/http/request';
 import useStore from '~/src/store';
 
 export default function ChannelScreen() {
   const channel = useStore((state) => state.channel);
+
+  useFocusEffect(() => {
+    if (channel?.id) {
+      startAI(channel.id);
+    }
+    return () => {
+      if (channel?.id) {
+        stopAI(channel.id);
+      }
+    };
+  });
 
   if (!channel) {
     return <Redirect href="/authenticated" />;
@@ -19,7 +31,7 @@ export default function ChannelScreen() {
 
       <Channel channel={channel}>
         <MessageList />
-        <ControlAIButton channel={channel} />
+        {/* <ControlAIButton channel={channel} /> */}
         <AITypingIndicatorView />
         <MessageInput />
       </Channel>

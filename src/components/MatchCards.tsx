@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
@@ -8,7 +8,6 @@ import { mainBrandColor } from '../config/config';
 import { useUser } from '../ctx/AuthProvider';
 import { supabase } from '../lib/supabase';
 import { startAIAgent } from '../utils/stream';
-import { useRouter } from 'expo-router';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
@@ -96,7 +95,7 @@ const MatchCardsComponent = () => {
       console.log('AI agent started for channel:', match.id);
 
       // 4. Navigate to chat
-      router.push(`/authenticated/channel/${match.id}`);
+      // router.push(`/authenticated/channel/${match.}`);
     } catch (error) {
       console.error('Error creating match:', error);
       // You might want to show an error message to the user here
