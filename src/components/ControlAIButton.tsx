@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import { Channel as ChannelType } from 'stream-chat';
 
-import { useWatchers } from '../app/hooks/stream/useWatchers';
+import { useWatchers } from '../hooks/stream/useWatchers';
 import { startAI, stopAI } from '../http/request';
 
 export default function ControlAIButton({ channel }: { channel: ChannelType }) {

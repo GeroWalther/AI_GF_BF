@@ -1,47 +1,65 @@
 import { Redirect, Stack } from 'expo-router';
-import { SafeAreaView, Text, View, StyleSheet, Button } from 'react-native';
-import { supabase } from '../lib/supabase';
+import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
 
 import AppleSignIn from '../components/AppleSignIn';
 import { useAuth } from '../ctx/AuthProvider';
-
+import { supabase } from '../lib/supabase';
 import { mainBrandColor } from '~/src/config/config';
 
 export default function AppEntrypoint() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, session } = useAuth();
+  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean | null>(null);
 
-  const testFunction = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const { data, error } = await supabase.functions.invoke('stream-token-provider', {
-      headers: {
-        Authorization: `Bearer ${session?.access_token}`,
-      },
-    });
-    // console.log('Function response:', { data, error });
+  useEffect(() => {
+    if (session?.user) {
+      checkOnboardingStatus();
+    }
+  }, [session]);
+
+  const checkOnboardingStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session?.user.id)
+        .single();
+
+      if (error) throw error;
+
+      setIsOnboardingCompleted(!!data?.onboarding_completed);
+    } catch (error) {
+      console.error('Error checking onboarding status:', error);
+      setIsOnboardingCompleted(false);
+    }
   };
 
-  if (isAuthenticated) {
-    return <Redirect href="/authenticated" />;
+  if (!isAuthenticated) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={styles.content}>
+          <View style={styles.textContainer}>
+            <Text style={styles.title}>Welcome</Text>
+            <Text style={styles.subtitle}>Sign in to meet your AI companion</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <AppleSignIn />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Stack.Screen options={{ headerShown: false }} />
-      <View style={styles.content}>
-        <Button title="Test Function" onPress={testFunction} />
-        <View style={styles.textContainer}>
-          <Text style={styles.title}>Welcome</Text>
-          <Text style={styles.subtitle}>Sign in to meet your AI companion</Text>
-        </View>
+  if (isOnboardingCompleted === null) {
+    return null;
+  }
 
-        <View style={styles.buttonContainer}>
-          <AppleSignIn />
-        </View>
-      </View>
-    </SafeAreaView>
-  );
+  if (!isOnboardingCompleted && isAuthenticated) {
+    return <Redirect href="/onboarding" />;
+  }
+
+  return <Redirect href="/authenticated" />;
 }
 
 const styles = StyleSheet.create({

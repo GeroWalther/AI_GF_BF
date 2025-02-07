@@ -1,4 +1,4 @@
-import { post } from './api.ts';
+import { post } from './api';
 import { AI_SERVER_URL } from '../config/config';
 
 console.log('AI_SERVER_URL:', AI_SERVER_URL);

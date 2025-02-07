@@ -4,7 +4,7 @@
     "slug": "AI_GF_BF",
     "version": "1.0.0",
 
-    "scheme": "AI_GF_BF",
+    "scheme": "ai-gf-bf",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -31,7 +31,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gw-intech.ai-gf-bf",
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library to save images.",
+        "NSCameraUsageDescription": "We need access to your camera to take photos."
+      }
     },
     "android": {
       "adaptiveIcon": {
