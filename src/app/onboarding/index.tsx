@@ -1,3 +1,4 @@
+import { useRouter, Stack } from 'expo-router';
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -10,11 +11,9 @@ import {
   TextInput,
   ScrollView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import { supabase } from '../../lib/supabase';
 
 import { mainBrandColor, personalityTraits } from '../../config/config';
-import { Stack } from 'expo-router';
+import { supabase } from '../../lib/supabase';
 
 // Add this type definition
 type UserPreferences = {
@@ -130,7 +129,7 @@ export default function Onboarding() {
           .from('profiles')
           .update({
             username: nickname,
-            preferences: preferences,
+            preferences,
             onboarding_completed: true,
           })
           .eq('id', user.id);
