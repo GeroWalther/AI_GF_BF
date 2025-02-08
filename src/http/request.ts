@@ -8,3 +8,6 @@ export const startAI = async (channelId: string) =>
 
 export const stopAI = async (channelId: string) =>
   post(`${AI_SERVER_URL}/stop-ai-agent`, { channel_id: channelId });
+
+export const newAIMessage = async (channelId: string) =>
+  post(`${AI_SERVER_URL}/new-ai-message`, { channel_id: channelId });

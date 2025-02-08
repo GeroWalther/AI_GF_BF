@@ -1,4 +1,4 @@
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
@@ -8,6 +8,7 @@ import { mainBrandColor } from '../config/config';
 import { useUser } from '../ctx/AuthProvider';
 import { supabase } from '../lib/supabase';
 import { startAIAgent } from '../utils/stream';
+import { newAIMessage } from '../http/request';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
@@ -15,7 +16,6 @@ const MatchCardsComponent = () => {
   const [index, setIndex] = useState(0);
 
   const user = useUser();
-  const router = useRouter();
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -89,12 +89,12 @@ const MatchCardsComponent = () => {
       }
 
       console.log('Channel created:', data);
-
       // 3. Start the AI agent for this channel
       await startAIAgent(match.id);
       console.log('AI agent started for channel:', match.id);
-
-      // 4. Navigate to chat
+      // 4. Send a new message to the channel
+      newAIMessage(match.id);
+      // 5. Navigate to chat
       // router.push(`/authenticated/channel/${match.}`);
     } catch (error) {
       console.error('Error creating match:', error);
