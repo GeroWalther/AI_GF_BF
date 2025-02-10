@@ -11,6 +11,7 @@ import Animated, {
   withDelay,
   withTiming,
   withRepeat,
+  FadeInDown,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
@@ -98,6 +99,11 @@ const Matched = () => {
     }>
   >([]);
   const nextHeartId = useRef(0);
+  const textScale = useSharedValue(0);
+  const textTranslateY = useSharedValue(50);
+  const imageScale = useSharedValue(0.8);
+  const imageOpacity = useSharedValue(0);
+  const buttonsOpacity = useSharedValue(0);
 
   const {
     data: agent,
@@ -152,10 +158,55 @@ const Matched = () => {
 
   useEffect(() => {
     if (agent) {
+      // Initial animations
       scale.value = withSpring(1, { damping: 12 });
       opacity.value = withTiming(1, { duration: 1000 });
       titleScale.value = withSequence(withDelay(400, withSpring(1.2)), withSpring(1));
 
+      // Text animation
+      textScale.value = withSequence(
+        withDelay(
+          200,
+          withSpring(1.2, {
+            damping: 8,
+            stiffness: 100,
+          })
+        ),
+        withSpring(1, {
+          damping: 12,
+        })
+      );
+
+      textTranslateY.value = withSequence(
+        withDelay(
+          200,
+          withSpring(0, {
+            damping: 8,
+            stiffness: 100,
+          })
+        )
+      );
+
+      // Image container animation
+      imageScale.value = withSequence(
+        withDelay(
+          600,
+          withSpring(1.1, {
+            damping: 12,
+            stiffness: 80,
+          })
+        ),
+        withSpring(1, {
+          damping: 10,
+        })
+      );
+
+      imageOpacity.value = withDelay(600, withTiming(1, { duration: 800 }));
+
+      // Buttons fade in after 1,5 seconds
+      buttonsOpacity.value = withDelay(1500, withTiming(1, { duration: 500 }));
+
+      // Heart pulse animation
       const pulseHeart = () => {
         heartScale.value = withSequence(
           withTiming(1.2, { duration: 200 }),
@@ -188,6 +239,20 @@ const Matched = () => {
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: buttonScale.value }],
+  }));
+
+  const textAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: textScale.value }, { translateY: textTranslateY.value }],
+    opacity: opacity.value,
+  }));
+
+  const imageContainerStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: imageScale.value }],
+    opacity: imageOpacity.value,
+  }));
+
+  const buttonsContainerStyle = useAnimatedStyle(() => ({
+    opacity: buttonsOpacity.value,
   }));
 
   const onPressIn = () => {
@@ -233,13 +298,13 @@ const Matched = () => {
 
       <Animated.View style={[styles.content, animatedStyle]}>
         <Animated.View style={[styles.titleContainer, titleStyle]}>
-          <Text style={styles.matchText}>It's a Match!</Text>
+          <Animated.Text style={[styles.matchText, textAnimatedStyle]}>It's a Match!</Animated.Text>
           <Animated.View style={[styles.heartContainer, heartStyle]}>
             <Ionicons name="heart" size={40} color="#FF4B6A" />
           </Animated.View>
         </Animated.View>
 
-        <View style={styles.imageContainer}>
+        <Animated.View style={[styles.imageContainer, imageContainerStyle]}>
           <Image
             style={styles.image}
             source={{
@@ -250,10 +315,12 @@ const Matched = () => {
             <Text style={styles.name}>{agent.name}</Text>
             <Text style={styles.bio}>{agent.bio}</Text>
           </View>
-        </View>
+        </Animated.View>
       </Animated.View>
 
-      <View style={styles.buttonContainer}>
+      <Animated.View
+        //   entering={FadeInDown.springify().damping(100).stiffness(300)}
+        style={[styles.buttonContainer, buttonsContainerStyle]}>
         <Animated.View style={[styles.buttonWrapper, buttonAnimatedStyle]}>
           <Pressable
             style={styles.button}
@@ -284,7 +351,7 @@ const Matched = () => {
             </LinearGradient>
           </Pressable>
         </Animated.View>
-      </View>
+      </Animated.View>
     </View>
   );
 };
@@ -330,6 +397,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
+    transform: [{ scale: 1 }],
   },
   image: {
     width: '100%',
