@@ -15,6 +15,7 @@ export default function ProtectedLayout() {
     <ChatClient>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'All Chats' }} />
+        <Stack.Screen name="matched/[agent_id]" options={{ headerShown: false, title: 'Match' }} />
       </Stack>
     </ChatClient>
   );
