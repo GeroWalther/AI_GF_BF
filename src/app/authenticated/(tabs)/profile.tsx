@@ -8,10 +8,11 @@ import {
   TextInput,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../ctx/AuthProvider';
+
 import { supabase } from '~/src/lib/supabase';
 import { mainBrandColor, personalityTraits } from '~/src/config/config';
 import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '~/src/ctx/AuthProvider';
 
 type UserPreferences = {
   preferredGender: 'female' | 'male';
@@ -109,6 +110,9 @@ const Profile = () => {
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="exit-outline" size={24} color="#fff" />
         </TouchableOpacity>
+        <View style={{ position: 'absolute', top: 100, right: 20 }}>
+          <Text>Log out</Text>
+        </View>
       </SafeAreaView>
 
       <ScrollView style={styles.content}>
@@ -230,6 +234,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: mainBrandColor,
     marginBottom: 10,
+    marginTop: 10,
   },
   email: {
     fontSize: 16,

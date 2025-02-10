@@ -113,7 +113,7 @@ const MatchCard = ({ agent, numOfCards, index, activeIndex, onMatch }: TinderCar
       <View
         style={{
           position: 'absolute',
-          bottom: 100,
+          bottom: 80,
           flexDirection: 'row',
           width: '100%',
           justifyContent: 'space-between',

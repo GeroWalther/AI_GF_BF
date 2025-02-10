@@ -5,7 +5,7 @@ export const mainBrandColor = '#5d0c34'; //'#5d0c34'
 
 // Use ngrok URL for development
 export const AI_SERVER_URL = __DEV__
-  ? 'https://6aa9-84-126-250-212.ngrok-free.app'
+  ? 'https://b766-84-126-250-212.ngrok-free.app'
   : 'https://your-production-url.com';
 
 
