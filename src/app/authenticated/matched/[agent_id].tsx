@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Image, StyleSheet, Text, View, Dimensions, Pressable } from 'react-native';
 import { AVATARSBUCKETURL, mainBrandColor } from '~/src/config/config';
 import Animated, {
@@ -10,6 +10,7 @@ import Animated, {
   withSequence,
   withDelay,
   withTiming,
+  withRepeat,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
@@ -27,6 +28,60 @@ const fetchAgentbyId = async (agent_id: string) => {
   return data;
 };
 
+const FloatingHeart = ({
+  startPosition,
+  delay = 0,
+  swayAmount = 50,
+  swayDuration = 2000,
+}: {
+  startPosition: number;
+  delay?: number;
+  swayAmount?: number;
+  swayDuration?: number;
+}) => {
+  const translateY = useSharedValue(0);
+  const translateX = useSharedValue(0);
+  const scale = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      scale.value = withSequence(
+        withTiming(1, { duration: 300 }),
+        withDelay(1000, withTiming(0, { duration: 500 }))
+      );
+      opacity.value = withSequence(
+        withTiming(0.15, { duration: 300 }),
+        withDelay(800, withTiming(0, { duration: 700 }))
+      );
+      translateY.value = withTiming(-300, { duration: 2000 });
+      translateX.value = withRepeat(
+        withSequence(
+          withTiming(startPosition + swayAmount, { duration: swayDuration }),
+          withTiming(startPosition - swayAmount, { duration: swayDuration })
+        ),
+        -1,
+        true
+      );
+    }, delay);
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: translateY.value },
+      { translateX: translateX.value },
+      { scale: scale.value },
+    ],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <Animated.View style={[styles.floatingHeart, animatedStyle]}>
+      <Ionicons name="heart" size={120} color="#FF4B6A" />
+    </Animated.View>
+  );
+};
+
 const Matched = () => {
   const { agent_id } = useLocalSearchParams<{ agent_id: string }>();
   const scale = useSharedValue(0);
@@ -34,6 +89,15 @@ const Matched = () => {
   const titleScale = useSharedValue(0.5);
   const heartScale = useSharedValue(1);
   const buttonScale = useSharedValue(1);
+  const [hearts, setHearts] = useState<
+    Array<{
+      position: number;
+      delay: number;
+      swayAmount: number;
+      swayDuration: number;
+    }>
+  >([]);
+  const nextHeartId = useRef(0);
 
   const {
     data: agent,
@@ -44,13 +108,54 @@ const Matched = () => {
     queryFn: () => fetchAgentbyId(agent_id),
   });
 
+  const addHearts = useCallback(() => {
+    const newHearts = [
+      {
+        position: Math.random() * 20 - 60, // Far left
+        delay: Math.random() * 1200, // Increased delay range 0-1200ms
+        swayAmount: 15 + Math.random() * 15,
+        swayDuration: 800 + Math.random() * 400,
+      },
+      {
+        position: Math.random() * 20 - 30, // Left
+        delay: Math.random() * 1200 + 200, // 200-1400ms
+        swayAmount: 15 + Math.random() * 15,
+        swayDuration: 800 + Math.random() * 400,
+      },
+      {
+        position: Math.random() * 20, // Center
+        delay: Math.random() * 1200 + 400, // 400-1600ms
+        swayAmount: 15 + Math.random() * 15,
+        swayDuration: 800 + Math.random() * 400,
+      },
+      {
+        position: Math.random() * 20 + 30, // Right
+        delay: Math.random() * 1200 + 600, // 600-1800ms
+        swayAmount: 15 + Math.random() * 15,
+        swayDuration: 800 + Math.random() * 400,
+      },
+      {
+        position: Math.random() * 20 + 60, // Far right
+        delay: Math.random() * 1200 + 800, // 800-2000ms
+        swayAmount: 15 + Math.random() * 15,
+        swayDuration: 800 + Math.random() * 400,
+      },
+    ];
+
+    setHearts((prev) => [...prev, ...newHearts]);
+    nextHeartId.current += 5;
+
+    setTimeout(() => {
+      setHearts((prev) => prev.slice(5));
+    }, 4000); // Increased timeout to account for longer delays
+  }, []);
+
   useEffect(() => {
     if (agent) {
       scale.value = withSpring(1, { damping: 12 });
       opacity.value = withTiming(1, { duration: 1000 });
       titleScale.value = withSequence(withDelay(400, withSpring(1.2)), withSpring(1));
 
-      // Pulsing heart animation
       const pulseHeart = () => {
         heartScale.value = withSequence(
           withTiming(1.2, { duration: 200 }),
@@ -62,6 +167,11 @@ const Matched = () => {
       return () => clearInterval(interval);
     }
   }, [agent]);
+
+  useEffect(() => {
+    const interval = setInterval(addHearts, 4500); // Increased interval
+    return () => clearInterval(interval);
+  }, [addHearts]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -108,6 +218,18 @@ const Matched = () => {
           style={StyleSheet.absoluteFill}
         />
       </BlurView>
+
+      <View style={styles.heartsContainer}>
+        {hearts.map((heart, index) => (
+          <FloatingHeart
+            key={`${index}-${nextHeartId.current}`}
+            startPosition={heart.position}
+            delay={heart.delay}
+            swayAmount={heart.swayAmount}
+            swayDuration={heart.swayDuration}
+          />
+        ))}
+      </View>
 
       <Animated.View style={[styles.content, animatedStyle]}>
         <Animated.View style={[styles.titleContainer, titleStyle]}>
@@ -291,5 +413,21 @@ const styles = StyleSheet.create({
   },
   primaryButtonText: {
     fontSize: 16,
+  },
+  heartsContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'none',
+    zIndex: 1,
+  },
+  floatingHeart: {
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: '40%',
   },
 });
