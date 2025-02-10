@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useAnimatedReaction, useSharedValue, runOnJS } from 'react-native-reanimated';
@@ -94,8 +94,8 @@ const MatchCardsComponent = () => {
       console.log('AI agent started for channel:', match.id);
       // 4. Send a new message to the channel
       newAIMessage(match.id);
-      // 5. Navigate to chat
-      // router.push(`/authenticated/channel/${match.}`);
+      // 5. Navigate to Matched screen
+      router.push(`/authenticated/matched/${agent.id}`);
     } catch (error) {
       console.error('Error creating match:', error);
       // You might want to show an error message to the user here
