@@ -338,7 +338,7 @@ const Matched = () => {
           <Pressable
             style={[styles.button, styles.primaryButton]}
             //TODO: push to channel based on id
-            onPress={() => router.push(`/authenticated/channel`)}
+            onPress={() => router.replace(`/authenticated/channel`)}
             onPressIn={onPressIn}
             onPressOut={onPressOut}>
             <LinearGradient
