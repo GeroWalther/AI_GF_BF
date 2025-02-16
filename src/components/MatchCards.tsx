@@ -9,7 +9,6 @@ import { useUser } from '../ctx/AuthProvider';
 import { supabase } from '../lib/supabase';
 import { startAIAgent } from '../utils/stream';
 import { newAIMessage } from '../http/request';
-import useStore from '../store';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
@@ -17,7 +16,6 @@ const MatchCardsComponent = () => {
   const [index, setIndex] = useState(0);
 
   const user = useUser();
-  const setChannel = useStore((state) => state.setChannel);
 
   useEffect(() => {
     const fetchAgents = async () => {
