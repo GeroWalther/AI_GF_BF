@@ -8,7 +8,7 @@ import { mainBrandColor } from '~/src/config/config';
 
 export default function AppEntrypoint() {
   const { isAuthenticated } = useAuth();
-  const { isOnboardingCompleted, loading } = useProfile();
+  const { isOnboardingCompleted, isLoading } = useProfile();
 
   if (!isAuthenticated) {
     return (
@@ -27,7 +27,7 @@ export default function AppEntrypoint() {
     );
   }
 
-  if (loading || isOnboardingCompleted === null) {
+  if (isLoading || isOnboardingCompleted === null) {
     return null;
   }
 

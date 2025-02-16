@@ -12,9 +12,14 @@ export const useProfile = () => {
   const user = useUser();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['profile'],
+    queryKey: ['profile', user?.id],
     queryFn: async () => getUserProfile(user?.id),
+    enabled: !!user?.id,
   });
 
-  return { data, isLoading };
+  return {
+    data,
+    isLoading,
+    isOnboardingCompleted: data?.onboarding_completed ?? null,
+  };
 };
