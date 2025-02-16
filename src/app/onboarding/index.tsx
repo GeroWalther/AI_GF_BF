@@ -70,7 +70,7 @@ export default function Onboarding() {
     {
       title: 'Finally',
       description: 'Ready to begin your journey?',
-      question: 'Select personality traits you prefer (up to 6):',
+      question: 'Select personality traits you prefer (up to 8):',
       image:
         aiGender === 'female'
           ? require('../../../assets/onboarding3.jpeg')
@@ -91,7 +91,7 @@ export default function Onboarding() {
                     onPress={() => {
                       if (selectedTraits.includes(trait)) {
                         setSelectedTraits(selectedTraits.filter((t) => t !== trait));
-                      } else if (selectedTraits.length < 6) {
+                      } else if (selectedTraits.length < 8) {
                         setSelectedTraits([...selectedTraits, trait]);
                       }
                     }}>
@@ -137,7 +137,7 @@ export default function Onboarding() {
         if (error) throw error;
 
         // Navigate to main app
-        router.replace('/authenticated');
+        router.replace('/authenticated/(tabs)/match');
       } catch (error) {
         console.error('Error saving preferences:', error);
         // You might want to show an error message to the user here
