@@ -9,6 +9,7 @@ import { useUser } from '../ctx/AuthProvider';
 import { supabase } from '../lib/supabase';
 import { startAIAgent } from '../utils/stream';
 import { newAIMessage } from '../http/request';
+import useStore from '../store';
 
 const MatchCardsComponent = () => {
   const [agents, setAgents] = useState<any[] | null>([]);
@@ -16,6 +17,7 @@ const MatchCardsComponent = () => {
   const [index, setIndex] = useState(0);
 
   const user = useUser();
+  const setChannel = useStore((state) => state.setChannel);
 
   useEffect(() => {
     const fetchAgents = async () => {
@@ -74,7 +76,7 @@ const MatchCardsComponent = () => {
       console.log('Match created:', match);
 
       // 2. Create Stream channel via edge function
-      const { data, error } = await supabase.functions.invoke('create-match-channel', {
+      const { data: channelData, error } = await supabase.functions.invoke('create-match-channel', {
         body: {
           matchId: match.id,
           userId: user.id,
@@ -88,12 +90,15 @@ const MatchCardsComponent = () => {
         throw error;
       }
 
-      console.log('Channel created:', data);
+      console.log('Channel created:', channelData);
+
       // 3. Start the AI agent for this channel
       await startAIAgent(match.id);
       console.log('AI agent started for channel:', match.id);
+
       // 4. Send a new message to the channel
-      newAIMessage(match.id);
+      await newAIMessage(match.id);
+
       // 5. Navigate to Matched screen
       router.push(`/authenticated/matched/${agent.id}`);
     } catch (error) {
