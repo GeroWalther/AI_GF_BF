@@ -1,38 +1,14 @@
 import { Redirect, Stack } from 'expo-router';
 import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
 
 import AppleSignIn from '../components/AppleSignIn';
 import { useAuth } from '../ctx/AuthProvider';
-import { supabase } from '../lib/supabase';
+import { useProfile } from '../hooks/useProfile';
 import { mainBrandColor } from '~/src/config/config';
 
 export default function AppEntrypoint() {
-  const { isAuthenticated, session } = useAuth();
-  const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    if (session?.user) {
-      checkOnboardingStatus();
-    }
-  }, [session]);
-
-  const checkOnboardingStatus = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('onboarding_completed')
-        .eq('id', session?.user.id)
-        .single();
-
-      if (error) throw error;
-
-      setIsOnboardingCompleted(!!data?.onboarding_completed);
-    } catch (error) {
-      console.error('Error checking onboarding status:', error);
-      setIsOnboardingCompleted(false);
-    }
-  };
+  const { isAuthenticated } = useAuth();
+  const { isOnboardingCompleted, loading } = useProfile();
 
   if (!isAuthenticated) {
     return (
@@ -51,7 +27,7 @@ export default function AppEntrypoint() {
     );
   }
 
-  if (isOnboardingCompleted === null) {
+  if (loading || isOnboardingCompleted === null) {
     return null;
   }
 

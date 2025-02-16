@@ -108,8 +108,8 @@ const MatchCardsComponent = () => {
       await startAIAgent(match.id);
       console.log('AI agent started for channel:', match.id);
 
-      // 5. Send a new message to the channel
-      await newAIMessage(match.id);
+      // 5. Send a new message to the channel - Do NOT REMOVE THIS. Its needed for Production
+      // await newAIMessage(match.id);
 
       // 6. Navigate to Matched screen
       router.push(`/authenticated/matched/${agent.id}`);
