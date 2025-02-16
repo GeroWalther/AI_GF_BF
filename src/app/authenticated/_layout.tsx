@@ -16,6 +16,9 @@ export default function ProtectedLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false, title: 'Back' }} />
         <Stack.Screen name="matched/[agent_id]" options={{ headerShown: false, title: 'Match' }} />
+        {/* TODO: Transparent header as temp fix 
+        related to https://github.com/expo/expo/issues/
+        33102 - maybe make header blurred */}
         <Stack.Screen name="channel" options={{ title: 'Chat', headerTransparent: true }} />
       </Stack>
     </ChatClient>
