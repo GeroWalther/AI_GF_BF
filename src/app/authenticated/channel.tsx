@@ -1,5 +1,6 @@
+import React from 'react';
 import { Redirect, Stack, useFocusEffect } from 'expo-router';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { AITypingIndicatorView, Channel, MessageInput, MessageList } from 'stream-chat-expo';
 
 import { mainBrandColor } from '~/src/config/config';
@@ -25,18 +26,19 @@ export default function ChannelScreen() {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: mainBrandColor, flex: 1 }}>
+    <>
       <Stack.Screen options={{ headerTitle: channel.data?.name || 'Chat' }} />
-
-      <Channel channel={channel} keyboardVerticalOffset={0}>
-        <MessageList />
-        <AITypingIndicatorView />
-        <MessageInput
-          additionalTextInputProps={{
-            placeholder: 'Type a message...',
-          }}
-        />
-      </Channel>
-    </SafeAreaView>
+      <SafeAreaView style={{ backgroundColor: 'white', flex: 1 }}>
+        <Channel channel={channel} keyboardVerticalOffset={0}>
+          <MessageList />
+          <AITypingIndicatorView />
+          <MessageInput
+            additionalTextInputProps={{
+              placeholder: 'Type a message...',
+            }}
+          />
+        </Channel>
+      </SafeAreaView>
+    </>
   );
 }
